@@ -131,9 +131,10 @@ socket_message[6] = function(id, size, data, address)
 		driver.drop(data, size)
 		return
 	end
-	local str = skynet.tostring(data, size)
+	-- from ken
+	-- local str = skynet.tostring(data, size)
+	s.callback(data, size, address)
 	skynet_core.trash(data, size)
-	s.callback(str, address)
 end
 
 local function default_warning(id, size)
