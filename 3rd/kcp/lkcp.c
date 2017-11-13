@@ -22,10 +22,10 @@
  *
  */
 
-// #include <stdlib.h>
-// #include <stdint.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
-/*
+
 #include <lua.h>
 #include <lauxlib.h>
 
@@ -293,5 +293,3 @@ int luaopen_lkcp(lua_State* L) {
 
     return 1;
 }
-
-*/

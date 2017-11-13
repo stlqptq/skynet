@@ -1,9 +1,9 @@
 local skynet = require "skynet"
+local crypt = require "skynet.crypt"
+local socketdriver = require "skynet.socketdriver"
 local netpack = require "websocketnetpack"
-local socketdriver = require "socketdriver"
 local httpd = require "http.httpd"
 local string = require "string"
-local crypt = require "crypt"
 local gateserver = {}
 
 local socket	-- listen socket
