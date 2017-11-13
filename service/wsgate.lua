@@ -1,5 +1,5 @@
 local skynet = require "skynet"
-local gateserver = require "snax.gateserver"
+local gateserver = require "snax.wsgateserver"
 local snax = require "snax"
 
 local watchdog
@@ -16,6 +16,10 @@ skynet.register_protocol {
 local handler = {}
 
 function handler.open(source)
+	-- default code
+	-- watchdog = conf.watchdog or source
+
+  -- from ken
 	watchdog = snax.bind(source, "watchdog")
 	login = skynet.newservice("login")
 	skynet.call(login, "lua", "open", source)
@@ -28,19 +32,26 @@ function handler.message(fd, msg, sz)
 	if agent then
 		skynet.redirect(agent, c.client, "client", 0, msg, sz)
 	else
---		skynet.send(watchdog, "lua", "socket", "data", fd, netpack.tostring(msg, sz))
-    skynet.redirect(login, fd, "client", 0, msg, sz)
+		-- default code
+		-- skynet.send(watchdog, "lua", "socket", "data", fd, netpack.tostring(msg, sz))
+
+		-- from ken
+		skynet.redirect(login, fd, "client", 0, msg, sz)
 	end
 end
 
 function handler.connect(fd, addr)
+	print("connect:", addr)
 	local c = {
 		fd = fd,
 		ip = addr,
 	}
 	connection[fd] = c
+	-- default code
+	-- skynet.send(watchdog, "lua", "socket", "open", fd, addr)
+
+  -- from ken
 	gateserver.openclient(fd)
---	skynet.send(watchdog, "lua", "socket", "open", fd, addr)
 end
 
 local function unforward(c)
@@ -61,36 +72,47 @@ end
 
 function handler.disconnect(fd)
 	close_fd(fd)
+	-- default code
+	-- skynet.send(watchdog, "lua", "socket", "close", fd)
+
+	-- from ken
 	watchdog.post.close(fd)
 end
 
 function handler.error(fd, msg)
 	close_fd(fd)
+	-- default code
+	-- skynet.send(watchdog, "lua", "socket", "error", fd, msg)
+
+	-- from ken
 	watchdog.post.error(fd, msg)
 end
 
 function handler.warning(fd, size)
+	-- default code
+	-- skynet.send(watchdog, "lua", "socket", "warning", fd, size)
+
+	-- from ken
 	watchdog.post.warning(fd, size)
 end
 
 local CMD = {}
 
 function CMD.forward(source, fd, client, address)
-
-  -- print("gate source:", source, " fd:",fd, " client:",client, " address:",address)
 	local c = assert(connection[fd])
 	unforward(c)
 	c.client = client or 0
 	c.agent = address or source
 	forwarding[c.agent] = c
---	gateserver.openclient(fd)
+	-- default code
+	-- gateserver.openclient(fd)
 end
 
---function CMD.accept(source, fd)
---	local c = assert(connection[fd])
---	unforward(c)
---	gateserver.openclient(fd)
---end
+-- function CMD.accept(source, fd)
+-- 	local c = assert(connection[fd])
+-- 	unforward(c)
+-- 	gateserver.openclient(fd)
+-- end
 
 function CMD.kick(source, fd)
 	gateserver.closeclient(fd)
