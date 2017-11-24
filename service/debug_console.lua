@@ -1,4 +1,5 @@
 local skynet = require "skynet"
+require "skynet.manager"        -- import skynet.abort
 local codecache = require "skynet.codecache"
 local core = require "skynet.core"
 local socket = require "skynet.socket"
@@ -341,6 +342,25 @@ function COMMAND.ping(address)
 	skynet.call(address, "debug", "PING")
 	ti = skynet.now() - ti
 	return tostring(ti)
+end
+
+local function getgateaddress(list)
+  for k,v in pairs(list) do
+    if "snlua wsgate" == v then
+      return k
+    end
+  end
+end
+
+function COMMAND.shutdown()
+  local list = skynet.call(".launcher", "lua", "LIST")
+  local gate = getgateaddress(list)
+  assert(gate)
+  skynet.call(adjust_address(gate), "lua", "close")
+end
+
+function COMMAND.abort()
+  skynet.abort()
 end
 
 function COMMANDX.call(cmd)

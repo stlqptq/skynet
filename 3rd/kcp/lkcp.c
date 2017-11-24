@@ -32,7 +32,6 @@
 #include "ikcp.h"
 #include "skynet_malloc.h"
 
-
 #define RECV_BUFFER_LEN 4*1024*1024
 
 #define check_kcp(L, idx)\

@@ -204,6 +204,7 @@ function host:dispatch(...)
 	if header.type then
 		-- request
 		local proto = queryproto(self.__proto, header.type)
+		-- print("dispatch request proto name:", proto.name)
 		local result
 		if proto.request then
 			result = core.decode(proto.request, content)
