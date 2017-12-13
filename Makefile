@@ -48,7 +48,7 @@ CSERVICE = snlua logger gate harbor
 LUA_CLIB = skynet \
   client \
   bson md5 sproto lpeg \
-  lkcp lutil websocketnetpack
+  lkcp lutil websocketnetpack clientwebsocket
 
 LUA_CLIB_SKYNET = \
   lua-skynet.c lua-seri.c \
@@ -113,6 +113,9 @@ $(LUA_CLIB_PATH)/lpeg.so : 3rd/lpeg/lpcap.c 3rd/lpeg/lpcode.c 3rd/lpeg/lpprint.c
 
 $(LUA_CLIB_PATH)/websocketnetpack.so : lualib-src/lua-websocketnetpack.c | $(LUA_CLIB_PATH)
 	$(CC) $(CFLAGS) $(SHARED) $^ -Iskynet-src -o $@ 
+
+$(LUA_CLIB_PATH)/clientwebsocket.so : lualib-src/lua-clientwebsocket.c | $(LUA_CLIB_PATH)
+	$(CC) $(CFLAGS) $(SHARED) $^ -o $@ -lpthread
 
 $(LUA_CLIB_PATH)/lkcp.so : 3rd/kcp/ikcp.c 3rd/kcp/lkcp.c | $(LUA_CLIB_PATH)
 	$(CC) $(CFLAGS) $(SHARED) -Iskynet-src -I3rd/kcp $^ -o $@ 
